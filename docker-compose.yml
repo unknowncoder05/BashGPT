@@ -1,0 +1,19 @@
+version: "3"
+
+volumes:
+  local_postgres_data: {}
+  local_postgres_data_backups: {}
+
+services:
+  main: &main
+    build:
+      context: ./
+      dockerfile: ./DockerFile
+    image: base-app
+    volumes:
+      - ./src:/src
+    env_file:
+      - ./.env
+    #ports:
+    #  - "8000:8000"
+    command: /start.sh
