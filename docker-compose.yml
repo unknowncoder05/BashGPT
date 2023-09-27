@@ -6,6 +6,8 @@ volumes:
 
 services:
   main: &main
+    environment:
+    - USER_INPUT
     build:
       context: ./
       dockerfile: ./DockerFile

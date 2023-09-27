@@ -1,4 +1,5 @@
+USER_INPUT=list the files
 build:
 	docker-compose build
-up:
-	docker-compose up
+command:
+	USER_INPUT="${USER_INPUT}" docker-compose up
