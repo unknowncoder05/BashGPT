@@ -2,20 +2,20 @@ from llm_toolbox.chatgpt import ChatGptPetition
 import subprocess
 import os
 
-
+os.chdir('sandbox')
 def execute_commands(commands):
     try:
+        output_list = []
         for command in commands:
-            # Use subprocess.run to execute the command
             print(f"Executing: {command}")
-            subprocess.run(command, shell=True, check=True)
+            result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             print(f"Command executed successfully")
+            output_list.append(result.stdout)
+        return output_list
     except subprocess.CalledProcessError as e:
-        # Handle errors if the command fails
         print(f"Command failed: {e}")
         return str(e)
     except Exception as e:
-        # Handle other exceptions
         print(f"An error occurred: {e}")
         return str(e)
 
@@ -23,7 +23,7 @@ class CustomChatGptPetition(ChatGptPetition):
     def on_message(self, message):
         if message['role'] == 'function':
             log = f"{message['role']} {message['name']}: {message['content']}"
-            print(log)
+            print('internal>', log)
         else:
             log = f"{message['role']}: {message['content']}"
             print(log)
@@ -43,12 +43,17 @@ petition.add_function(
 )
 
 # context
+current_directory = os.getcwd()
+contents = os.listdir(current_directory)
 petition.system(
-    "you are an software developer with the hability to execute any command on the terminal",
-    "read, create, delete or modify files if necesary",
+    "you are a software developer with the hability to execute any command on the terminal",
+    "execute, read, create, delete or modify files if necesary",
     "solve the task even if not all the information was given",
-    "leave instructions if necessary",
+    "if a first solution is not successful, try another way",
+    "leave instructions of use if necessary",
     "do not use cd command",
+    f"current_directory: {current_directory}",
+    f"ls: {'/n'.join(contents)}",
 )
 petition.assistant(assistant_first_message)
 petition.user(user_input)

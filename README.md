@@ -2,6 +2,12 @@
 
 This project demonstrates how to create a Docker container for running a Python script that interacts with the ChatGPT API to execute commands in the Bash shell. With this setup, you can send text commands to ChatGPT, and it will execute those commands in a Bash shell environment within the Docker container.
 
+# Security concerns
+
+Yes, Every command ChatGPT provides will be executed, which includes actions such as modifying and creating files, as well as accessing the internet. It has the capability to interact with external resources
+
+No, it does not have access to local files outside the project directory. Its environment is securely encapsulated using Docker, ensuring a restricted scope of operation (at least for now)
+
 ## Prerequisites
 
 Before you start, ensure you have the following prerequisites:
@@ -38,31 +44,47 @@ Before you start, ensure you have the following prerequisites:
 4. Run the Docker container:
 
     ```bash
-   make command USER_INPUT="create facebook in python"
+   make command USER_INPUT="give me a list of astronauts on space right now"
    ```
     or
    ```bash
-   USER_INPUT="create facebook in python" docker-compose up
+   USER_INPUT="give me a list of astronauts on space right now" docker-compose up
    ```
 
    This will start the Python script inside the Docker container, and you will be able to enter text commands.
 
-5. Enter text commands, and ChatGPT will execute them in the Bash shell environment. For example, you can type:
+5. ChatGPT will generate commands that then will be executed and finally be returned to the user
 
+   ```sh
+$ sudo make command USER_INPUT="give me a list of astronauts on space right now"
+USER_INPUT="give me a list of astronauts on space right now" docker-compose up
+Starting bashgpt_main_1 ... done
+Attaching to bashgpt_main_1
+main_1  | assistant: None
+main_1  | Executing: curl -s http://api.open-notify.org/astros.json
+main_1  | Command executed successfully
+main_1  | internal> function execute_commands: ["{\"people\": [{\"craft\": \"Tiangong\", \"name\": \"Jing Haiping\"}, {\"craft\": \"Tiangong\", \"name\": \"Gui Haichow\"}, {\"craft\": \"Tiangong\", \"name\": \"Zhu Yangzhu\"}, {\"craft\": \"ISS\", \"name\": \"Jasmin Moghbeli\"}, {\"craft\": \"ISS\", \"name\": \"Andreas Mogensen\"}, {\"craft\": \"ISS\", \"name\": \"Satoshi Furukawa\"}, {\"craft\": \"ISS\", \"name\": \"Konstantin Borisov\"}, {\"craft\": \"ISS\", \"name\": \"Oleg Kononenko\"}, {\"craft\": \"ISS\", \"name\": \"Nikolai Chub\"}, {\"craft\": \"ISS\", \"name\": \"Loral O'Hara\"}], \"number\": 10, \"message\": \"success\"}"]
+main_1  | assistant: Currently, there are 10 astronauts in space. Here is the list of astronauts:
+main_1  | 
+main_1  | 1. Jing Haiping - aboard the spacecraft Tiangong
+main_1  | 2. Gui Haichow - aboard the spacecraft Tiangong
+main_1  | 3. Zhu Yangzhu - aboard the spacecraft Tiangong
+main_1  | 4. Jasmin Moghbeli - aboard the International Space Station (ISS)
+main_1  | 5. Andreas Mogensen - aboard the International Space Station (ISS)
+main_1  | 6. Satoshi Furukawa - aboard the International Space Station (ISS)
+main_1  | 7. Konstantin Borisov - aboard the International Space Station (ISS)
+main_1  | 8. Oleg Kononenko - aboard the International Space Station (ISS)
+main_1  | 9. Nikolai Chub - aboard the International Space Station (ISS)
+main_1  | 10. Loral O'Hara - aboard the International Space Station (ISS)
+main_1  | 
+main_1  | Please let me know if there's anything else I can help you with!
    ```
-   Execute the following commands:
-   echo "Hello, ChatGPT"
-   ls -l
-   ```
-
-   ChatGPT will process the input and execute the provided commands.
-
-6. To exit the Docker container, simply type `exit`.
 
 ## Note
 
 - Ensure that you have properly set up your ChatGPT API key in the `.env` file.
-- Always be cautious when executing shell commands obtained from external sources, as they can potentially be harmful.
+- Do not use personal or private data
+- The model is subject to reject petitions based on the companies restrictions
 
 ## License
 
